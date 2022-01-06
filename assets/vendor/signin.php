@@ -2,21 +2,21 @@
 session_start();
 require_once 'connect.php';
 
-/* ЗАЩИТА ОТ СПАМА*/
-$time_finish = time();
+/* ЗАЩИТА ОТ СПАМА -> */
+$time_finish = time(); // настоящее время
 $ipUser = $_SERVER['REMOTE_ADDR']; //ip пользователя
 
 $check_ip = mysqli_query($connect, "SELECT * FROM `bots`WHERE ip = '$ipUser'");
-if (mysqli_num_rows($check_ip) > 0) {
+if (mysqli_num_rows($check_ip) > 0) { //есть ли данный ip d черном списке (таблица "bots")
     exit('Ваш IP '."($ipUser)".' заблокирован в связи с подозрительной деятельностью.');
 }
 
-if ( $time_finish - $_SESSION['time_start'] < 3 || $_POST['username']|| $_POST['capcha']){
-    mysqli_query($connect, "INSERT INTO `bots` (`date`, `ip`) VALUES (CURRENT_TIMESTAMP(),'$ipUser')");
+if ( $time_finish - $_SESSION['time_start'] < 3 || $_POST['username']|| $_POST['capcha']){ //если прошло мнее 3 секунд с момента открытия index и в скрытых полях что-то есть
+    mysqli_query($connect, "INSERT INTO `bots` (`date`, `ip`) VALUES (CURRENT_TIMESTAMP(),'$ipUser')"); //добавление в черный список таблица "bots"
     exit('Ваш IP заблокирован в связи с подозрительной деятельностью.');
 }
 unset($_SESSION['time_start']);
-/* ЗАЩИТА ОТ СПАМА*/
+/* <- ЗАЩИТА ОТ СПАМА*/
 
 if ($_POST["login"] && $_POST["password"])
     {
@@ -26,8 +26,7 @@ if ($_POST["login"] && $_POST["password"])
         $login = addslashes($login);
 
         $pass = sha1( $salt1.$_POST["password"].$salt2);
-
-        //$check_user = mysqli_query($connect, "SELECT * FROM `users`WHERE `login` = '$login' AND `password` = '$pass'"); //проверяем наличие пользователя
+        
         $query = 'SELECT * FROM `users` WHERE `login` = ? AND `password` = ?';
 
         $stmt = $connect_oop->prepare($query);
@@ -36,7 +35,6 @@ if ($_POST["login"] && $_POST["password"])
         $result =$stmt->get_result();
         $check_user =$result->num_rows;
 
-        //if (mysqli_num_rows($check_user) > 0)
         if ($check_user > 0)
         {
             //$user = mysqli_fetch_assoc($check_user); //преобразуем sql запрос в массив
@@ -61,7 +59,7 @@ if ($_POST["login"] && $_POST["password"])
                 header('Location: ../../profile.php');
             }
 
-        else {
+        else { //в случае неверного ввода логина или пароля
             $_SESSION['message'] = 'Неверный логин или пароль';
 
             ++$_SESSION['count_err'];
