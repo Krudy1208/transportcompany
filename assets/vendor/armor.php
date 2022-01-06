@@ -1,4 +1,5 @@
 <?php
+/* Экранирование кавычек слэшей и прочее */
 function ekran($a)
 {
     $a = strip_tags($a);
