@@ -33,9 +33,11 @@ $id= $_SESSION['user']['id'];
     if (!$_POST['month']){
     $sql_request = mysqli_query($connect, "SELECT * FROM `orders`");
     $num_orders = mysqli_num_rows($sql_request); //общее количество заказов
+        
     $request_total_amount = mysqli_query($connect, "SELECT SUM(cost) FROM `orders` "); //общая сумма
-    $arr_total_amount = mysqli_fetch_assoc($request_total_amount);
+    $arr_total_amount = mysqli_fetch_assoc($request_total_amount);        
     $total_amount = $arr_total_amount['SUM(cost)'];
+        
     $average_value = mysqli_query($connect, "SELECT AVG(cost) FROM `orders` ");// средняя сумма
     $arr_average_value = mysqli_fetch_assoc($average_value);
     $average_value = round($arr_average_value['AVG(cost)'], 2, PHP_ROUND_HALF_UP);
@@ -58,7 +60,9 @@ $id= $_SESSION['user']['id'];
     }
     /*Запросы по месяцу для списка */
     if ($_POST['month'] && $_POST['year']) {
+        
         //функция $request_month_year возвращает массив статистики (общее количество заказов, общая сумма, средняя сумма, самое дальнее расстояние + города, самое ближнее расстояние + города) в зависимоти от месяца и года
+       
         $request_month_year = function ($month, $year) use ($connect) {
             $sql_request = mysqli_query($connect, "SELECT * FROM `orders` WHERE YEAR(date)= '$year' AND MONTHNAME(date)= '$month'");
             $show_lines = mysqli_num_rows($sql_request);
@@ -104,7 +108,7 @@ $id= $_SESSION['user']['id'];
             }
 
         };
-        $arr_request_month = $request_month_year($_POST['month'],$_POST['year']);
+        $arr_request_month = $request_month_year($_POST['month'],$_POST['year']); //Вызов функции
 
         /* Извлечение переменных из массива */
         $num_orders = $arr_request_month['num_orders'];
@@ -121,15 +125,15 @@ $id= $_SESSION['user']['id'];
     ?>
 </div>
 <div id="my_order">
-    <?if ($arr_request_month || !$_POST['month']  || !$_POST['year']){  //  ?>
+    <?if ($arr_request_month || !$_POST['month']  || !$_POST['year']){  //  ?> //если запросов нет - возвращает статистику за все время
         
-     <?if ($_POST['month'] == ''){ ?>
+     <?if ($_POST['month'] == ''){ ?> // если первая строка в списке она же ''
          <h3>Статистика за все время</h3>
          <? }
 
          ?>
   <?if($_POST['month'] && $_POST['year'] !==""){ ?>
-      <h3>Статистаки за <? print_r($_POST['month'].' '.$_POST['year']);""?></h3>
+      <h3>Статистаки за <? print_r($_POST['month'].' '.$_POST['year']);""?></h3> // Заголовок.  
       <?}
 
       ?>
@@ -142,7 +146,7 @@ $id= $_SESSION['user']['id'];
 <? }
 
 
-elseif (!$arr_request_month) { //?>
+elseif (!$arr_request_month) { //?> //в случае отсутствия записей в БД на счет конкретного месяца и года 
        <h3>Статистака за <? print_r($_POST['month'].' '.$_POST['year']);?></h3>
     За данный промежуток времени данных нет.
     <? }
