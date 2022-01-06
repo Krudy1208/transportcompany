@@ -62,7 +62,7 @@ $id= $_SESSION['user']['id'];
         ?> <h3 style="color: red"> Количество новых заказов: <? echo "$nombre_new_orders"?> </h3> <?
     }
 
-    /*ПАГИНАЦИЯ*/
+    /*ПАГИНАЦИЯ -> */
 
     if($_GET['pageno']){
         $pageno = $_GET['pageno'];
@@ -75,7 +75,7 @@ $id= $_SESSION['user']['id'];
     $sql_request = mysqli_query($connect, "SELECT * FROM `orders`");
     $num_rows = mysqli_num_rows($sql_request); //общее количество строк в таблице
     $total_page =  ceil($num_rows / $size_page ); //сколько будет всего страниц в зависимости от кол-ва строк
-    /*ПАГИНАЦИЯ*/
+    /* <- ПАГИНАЦИЯ*/
 
     /* Запрос на таблицу orders если не заданы фильтры и поиск ->*/
     if (!$_GET['search'] && !$_GET['filter']){
@@ -109,7 +109,7 @@ $id= $_SESSION['user']['id'];
 
     }
 
-    /* ЗАПРОС ПО ФИЛЬТРАМ */
+    /* ЗАПРОС ПО ФИЛЬТРАМ -> */
     elseif($_GET['filter']){
 
         /*по новым заказам*/
@@ -168,6 +168,7 @@ $id= $_SESSION['user']['id'];
                 break;
         }
     }
+         /* <- ЗАПРОС ПО ФИЛЬТРАМ */
     if ($lines > 0) {
     ?>
     <table>
